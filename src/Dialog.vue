@@ -98,7 +98,7 @@
     }
 
     .vue-dialog button {
-        background: transparent;
+        /*background: transparent;*/
         padding: 0;
         margin: 0;
         border: 0;
