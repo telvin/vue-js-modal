@@ -505,7 +505,7 @@ var Component = __webpack_require__(1)(
   /* cssModules */
   null
 )
-Component.options.__file = "/Users/yev/Projects/vue/vue-js-modal/src/Dialog.vue"
+Component.options.__file = "/Users/apple/Documents/mamp.root/vue-js-modal/src/Dialog.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] Dialog.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -543,7 +543,7 @@ var Component = __webpack_require__(1)(
   /* cssModules */
   null
 )
-Component.options.__file = "/Users/yev/Projects/vue/vue-js-modal/src/Modal.vue"
+Component.options.__file = "/Users/apple/Documents/mamp.root/vue-js-modal/src/Modal.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] Modal.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -573,18 +573,26 @@ module.exports = Component.exports
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+
+
+var btnDefaultClass = 'dlg-btn';
 exports.default = {
   name: 'Dialog',
   data: function data() {
     return {
       params: {},
-      defaultButtons: [{ title: 'CLOSE' }]
+      defaultButtons: [{ title: 'CLOSE', class: btnDefaultClass }]
     };
   },
 
   computed: {
     buttons: function buttons() {
-      return this.params.buttons || this.defaultButtons;
+      var buttons = this.params.buttons || this.defaultButtons;
+      buttons.forEach(function (button) {
+        button.class = button.class || btnDefaultClass;
+      });
+      console.log('buttons', buttons);
+      return buttons;
     },
     buttonStyle: function buttonStyle() {
       return {
@@ -1203,7 +1211,7 @@ exports = module.exports = __webpack_require__(0)();
 
 
 // module
-exports.push([module.i, "\n.vue-dialog {\n  font-size: 14px;\n}\n.vue-dialog div {\n  box-sizing: border-box;\n}\n.vue-dialog .dialog-flex {\n  width: 100%;\n  height: 100%;\n}\n.vue-dialog .dialog-content {\n  flex: 1 0 auto;\n  width: 100%;\n  padding: 15px;\n}\n.vue-dialog .dialog-c-title {\n  font-weight: 600;\n  padding-bottom: 15px;\n}\n.vue-dialog .dialog-c-text {\n}\n.vue-dialog .dialog-buttons {\n  display: flex;\n  flex: 0 1 auto;\n  width: 100%;\n  border-top: 1px solid #eee;\n  font-size: 12px;\n}\n.vue-dialog .dialog-buttons-none {\n  width: 100%;\n  padding-bottom: 15px;\n}\n.vue-dialog button {\n  background: transparent;\n  padding: 0;\n  margin: 0;\n  border: 0;\n  cursor: pointer;\n  box-sizing: border-box;\n  line-height: 44px;\n  height: 44px;\n\n/*  text-transform: uppercase; */\n/*  letter-spacing: 1px; */\n\n  color:inherit;\n  font:inherit;\n}\n.vue-dialog button:hover {\n  background: rgba(0, 0, 0, 0.01);\n}\n.vue-dialog button:active {\n  background: rgba(0, 0, 0, 0.025);\n}\n.vue-dialog button:not(:first-of-type) {\n  border-left: 1px solid #eee;\n}\n", "", {"version":3,"sources":["/./src/Dialog.vue?52df2bd4"],"names":[],"mappings":";AAwEA;EACA,gBAAA;CACA;AAEA;EACA,uBAAA;CACA;AAEA;EACA,YAAA;EACA,aAAA;CACA;AAEA;EACA,eAAA;EACA,YAAA;EACA,cAAA;CACA;AAEA;EACA,iBAAA;EACA,qBAAA;CACA;AAEA;CACA;AAEA;EACA,cAAA;EACA,eAAA;EACA,YAAA;EACA,2BAAA;EACA,gBAAA;CACA;AAEA;EACA,YAAA;EACA,qBAAA;CACA;AAEA;EACA,wBAAA;EACA,WAAA;EACA,UAAA;EACA,UAAA;EACA,gBAAA;EACA,uBAAA;EACA,kBAAA;EACA,aAAA;;AAEA,iCAAA;AACA,2BAAA;;EAEA,cAAA;EACA,aAAA;CACA;AAEA;EACA,gCAAA;CACA;AAEA;EACA,iCAAA;CACA;AAEA;EACA,4BAAA;CACA","file":"Dialog.vue","sourcesContent":["<template>\n  <modal name=\"dialog\"\n         :classes=\"['v--modal', 'vue-dialog', this.params.class]\"\n         :width=\"400\"\n         height=\"auto\"\n         :pivot-y=\"0.3\"\n         :adaptive=\"true\"\n         transition=\"fade\"\n         @before-open=\"beforeOpened\"\n         @before-close=\"beforeClosed\">\n      <div class=\"dialog-content\">\n        <div class=\"dialog-c-title\"\n             v-if=\"params.title\"\n             v-html=\"params.title || ''\"></div>\n        <div class=\"dialog-c-text\"\n             v-html=\"params.text || ''\"></div>\n      </div>\n      <div class=\"dialog-buttons\" v-if=\"buttons\">\n        <button v-for=\"(button, i) in buttons\"\n                :style=\"buttonStyle\"\n                :key=\"i\"\n                v-html=\"button.title\"\n                @click.stop=\"click(i, $event)\">\n          {{button.title}}\n        </button>\n      </div>\n      <div v-else class=\"dialog-buttons-none\"></div>\n  </modal>\n</template>\n<script>\n  export default {\n    name: 'Dialog',\n    data () {\n      return {\n        params: {},\n        defaultButtons: [{ title: 'CLOSE' }]\n      }\n    },\n    computed: {\n      buttons () {\n        return this.params.buttons || this.defaultButtons\n      },\n      /**\n       * Returns FLEX style with correct width for arbitrary number of\n       * buttons.\n       */\n      buttonStyle () {\n        return {\n          flex: `1 1 ${100 / this.buttons.length}%`\n        }\n      }\n    },\n    methods: {\n      beforeOpened (event) {\n        this.params = event.params || {}\n      },\n      beforeClosed () {\n        this.params = {}\n      },\n      click (i, event) {\n        let button = this.buttons[i]\n\n        if (typeof button.handler === 'function') {\n          return button.handler(i, event)\n        } else {\n          this.$modal.hide('dialog')\n        }\n      }\n    }\n  }\n</script>\n<style>\n  .vue-dialog {\n    font-size: 14px;\n  }\n\n  .vue-dialog div {\n    box-sizing: border-box;\n  }\n\n  .vue-dialog .dialog-flex {\n    width: 100%;\n    height: 100%;\n  }\n\n  .vue-dialog .dialog-content {\n    flex: 1 0 auto;\n    width: 100%;\n    padding: 15px;\n  }\n\n  .vue-dialog .dialog-c-title {\n    font-weight: 600;\n    padding-bottom: 15px;\n  }\n\n  .vue-dialog .dialog-c-text {\n  }\n\n  .vue-dialog .dialog-buttons {\n    display: flex;\n    flex: 0 1 auto;\n    width: 100%;\n    border-top: 1px solid #eee;\n    font-size: 12px;\n  }\n\n  .vue-dialog .dialog-buttons-none {\n    width: 100%;\n    padding-bottom: 15px;\n  }\n\n  .vue-dialog button {\n    background: transparent;\n    padding: 0;\n    margin: 0;\n    border: 0;\n    cursor: pointer;\n    box-sizing: border-box;\n    line-height: 44px;\n    height: 44px;\n\n  /*  text-transform: uppercase; */\n  /*  letter-spacing: 1px; */\n\n    color:inherit;\n    font:inherit;\n  }\n\n  .vue-dialog button:hover {\n    background: rgba(0, 0, 0, 0.01);\n  }\n\n  .vue-dialog button:active {\n    background: rgba(0, 0, 0, 0.025);\n  }\n\n  .vue-dialog button:not(:first-of-type) {\n    border-left: 1px solid #eee;\n  }\n</style>\n"],"sourceRoot":"webpack://"}]);
+exports.push([module.i, "\n.vue-dialog {\n    font-size: 14px;\n}\n.vue-dialog div {\n    box-sizing: border-box;\n}\n.vue-dialog .dialog-flex {\n    width: 100%;\n    height: 100%;\n}\n.vue-dialog .dialog-content {\n    flex: 1 0 auto;\n    width: 100%;\n    padding: 15px;\n}\n.vue-dialog .dialog-c-title {\n    font-weight: 600;\n    padding-bottom: 15px;\n}\n.vue-dialog .dialog-c-text {\n}\n.vue-dialog .dialog-buttons {\n    display: flex;\n    flex: 0 1 auto;\n    width: 100%;\n    border-top: 1px solid #eee;\n    font-size: 12px;\n}\n.vue-dialog .dialog-buttons-none {\n    width: 100%;\n    padding-bottom: 15px;\n}\n.vue-dialog button {\n    background: transparent;\n    padding: 0;\n    margin: 0;\n    border: 0;\n    cursor: pointer;\n    box-sizing: border-box;\n    line-height: 44px;\n    height: 44px;\n\n    /*  text-transform: uppercase; */\n    /*  letter-spacing: 1px; */\n\n    color: inherit;\n    font: inherit;\n}\n.vue-dialog button:hover {\n    background: rgba(0, 0, 0, 0.01);\n}\n.vue-dialog button:active {\n    background: rgba(0, 0, 0, 0.025);\n}\n.vue-dialog button:not(:first-of-type) {\n    border-left: 1px solid #eee;\n}\n", "", {"version":3,"sources":["/./src/Dialog.vue?849d763e"],"names":[],"mappings":";AA2DA;IACA,gBAAA;CACA;AAEA;IACA,uBAAA;CACA;AAEA;IACA,YAAA;IACA,aAAA;CACA;AAEA;IACA,eAAA;IACA,YAAA;IACA,cAAA;CACA;AAEA;IACA,iBAAA;IACA,qBAAA;CACA;AAEA;CACA;AAEA;IACA,cAAA;IACA,eAAA;IACA,YAAA;IACA,2BAAA;IACA,gBAAA;CACA;AAEA;IACA,YAAA;IACA,qBAAA;CACA;AAEA;IACA,wBAAA;IACA,WAAA;IACA,UAAA;IACA,UAAA;IACA,gBAAA;IACA,uBAAA;IACA,kBAAA;IACA,aAAA;;IAEA,iCAAA;IACA,2BAAA;;IAEA,eAAA;IACA,cAAA;CACA;AAEA;IACA,gCAAA;CACA;AAEA;IACA,iCAAA;CACA;AAEA;IACA,4BAAA;CACA","file":"Dialog.vue","sourcesContent":["<template>\n    <modal name=\"dialog\" :classes=\"['v--modal', 'vue-dialog', this.params.class]\" :width=\"400\" height=\"auto\" :pivot-y=\"0.3\" :adaptive=\"true\" transition=\"fade\" @before-open=\"beforeOpened\" @before-close=\"beforeClosed\">\n        <div class=\"dialog-content\">\n            <div class=\"dialog-c-title\" v-if=\"params.title\" v-html=\"params.title || ''\"></div>\n            <div class=\"dialog-c-text\" v-html=\"params.text || ''\"></div>\n        </div>\n        <div class=\"dialog-buttons\" v-if=\"buttons\">\n            <button v-for=\"(button, i) in buttons\" :style=\"buttonStyle\" :key=\"i\" :class=\"button.class\" v-html=\"button.title\" @click.stop=\"click(i, $event)\">\n                {{button.title}}\n            </button>\n        </div>\n        <div v-else class=\"dialog-buttons-none\"></div>\n    </modal>\n</template>\n<script>\n  let btnDefaultClass = 'dlg-btn'\n  export default {\n    name: 'Dialog',\n    data () {\n      return {\n        params: {},\n        defaultButtons: [{title: 'CLOSE', class: btnDefaultClass}]\n      }\n    },\n    computed: {\n      buttons () {\n        let buttons = this.params.buttons || this.defaultButtons\n        buttons.forEach(function (button) {\n          button.class = button.class || btnDefaultClass\n        })\n        console.log('buttons', buttons)\n        return buttons\n      },\n      buttonStyle () {\n        return {\n          flex: `1 1 ${100 / this.buttons.length}%`\n        }\n      }\n    },\n    methods: {\n      beforeOpened (event) {\n        this.params = event.params || {}\n      },\n      beforeClosed () {\n        this.params = {}\n      },\n      click (i, event) {\n        let button = this.buttons[i]\n\n        if (typeof button.handler === 'function') {\n          return button.handler(i, event)\n        } else {\n          this.$modal.hide('dialog')\n        }\n      }\n    }\n  }\n</script>\n<style>\n    .vue-dialog {\n        font-size: 14px;\n    }\n\n    .vue-dialog div {\n        box-sizing: border-box;\n    }\n\n    .vue-dialog .dialog-flex {\n        width: 100%;\n        height: 100%;\n    }\n\n    .vue-dialog .dialog-content {\n        flex: 1 0 auto;\n        width: 100%;\n        padding: 15px;\n    }\n\n    .vue-dialog .dialog-c-title {\n        font-weight: 600;\n        padding-bottom: 15px;\n    }\n\n    .vue-dialog .dialog-c-text {\n    }\n\n    .vue-dialog .dialog-buttons {\n        display: flex;\n        flex: 0 1 auto;\n        width: 100%;\n        border-top: 1px solid #eee;\n        font-size: 12px;\n    }\n\n    .vue-dialog .dialog-buttons-none {\n        width: 100%;\n        padding-bottom: 15px;\n    }\n\n    .vue-dialog button {\n        background: transparent;\n        padding: 0;\n        margin: 0;\n        border: 0;\n        cursor: pointer;\n        box-sizing: border-box;\n        line-height: 44px;\n        height: 44px;\n\n        /*  text-transform: uppercase; */\n        /*  letter-spacing: 1px; */\n\n        color: inherit;\n        font: inherit;\n    }\n\n    .vue-dialog button:hover {\n        background: rgba(0, 0, 0, 0.01);\n    }\n\n    .vue-dialog button:active {\n        background: rgba(0, 0, 0, 0.025);\n    }\n\n    .vue-dialog button:not(:first-of-type) {\n        border-left: 1px solid #eee;\n    }\n</style>\n"],"sourceRoot":"webpack://"}]);
 
 // exports
 
@@ -1254,7 +1262,7 @@ var Component = __webpack_require__(1)(
   /* cssModules */
   null
 )
-Component.options.__file = "/Users/yev/Projects/vue/vue-js-modal/src/Resizer.vue"
+Component.options.__file = "/Users/apple/Documents/mamp.root/vue-js-modal/src/Resizer.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] Resizer.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -1310,6 +1318,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   }, _vm._l((_vm.buttons), function(button, i) {
     return _c('button', {
       key: i,
+      class: button.class,
       style: (_vm.buttonStyle),
       domProps: {
         "innerHTML": _vm._s(button.title)
@@ -1320,7 +1329,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
           _vm.click(i, $event)
         }
       }
-    }, [_vm._v("\n        " + _vm._s(button.title) + "\n      ")])
+    }, [_vm._v("\n            " + _vm._s(button.title) + "\n        ")])
   })) : _c('div', {
     staticClass: "dialog-buttons-none"
   })])

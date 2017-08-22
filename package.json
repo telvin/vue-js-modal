@@ -1,12 +1,12 @@
 {
-  "name": "vue-js-modal",
+  "name": "telvin-vue-js-modal",
   "description": "Modal Component for Vue.js",
-  "version": "1.2.8",
+  "version": "1.2.9",
   "author": "euvl <yev.vlasenko@gmail.com>",
   "main": "dist/index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/euvl/vue-js-modal.git"
+    "url": "https://github.com/telvin/vue-js-modal.git"
   },
   "keywords": [
     "vue",
